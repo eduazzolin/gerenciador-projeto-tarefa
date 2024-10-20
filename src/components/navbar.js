@@ -6,7 +6,7 @@ import { Link, NavLink } from 'react-router-dom';
 
 function AppNavbar() {
   return (
-    <Navbar expand="lg" className="bg-body-tertiary py-1">
+    <Navbar expand="md" className="bg-body-tertiary py-1">
       <Container>
         <Navbar.Brand as={Link} to="/home">
           <h4>Gerenciador de Projetos</h4>
