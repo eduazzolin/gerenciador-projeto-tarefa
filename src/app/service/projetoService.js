@@ -9,7 +9,7 @@ export const projetoPrototype = {
   }
 }
 
-export async function consultar() {
+export async function consultarProjetos() {
   return [
     {
       "id": 1,

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TituloPagina from "../components/tituloPagina";
 import { Button, Form } from "react-bootstrap";
-import { consultar, projetoPrototype } from "../app/service/projetoService";
+import { consultarProjetos, projetoPrototype } from "../app/service/projetoService";
 import CartaoProjeto from "../components/cartaoProjeto/cartaoProjeto";
 import {useNavigate} from "react-router-dom";
 
@@ -11,7 +11,7 @@ function MeusProjetos() {
 
   const mountPage = async () => {
     try {
-      const responseProjetos = await consultar();
+      const responseProjetos = await consultarProjetos();
       setProjetos(responseProjetos);
     } catch (error) {
       console.log("Erro ao buscar dados", error);
