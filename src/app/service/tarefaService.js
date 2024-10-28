@@ -20,7 +20,7 @@ export async function consultarPorId() {
   };
 }
 
-export async function consultar() {
+export async function consultarTarefas() {
   return [
     {
       "id": 1,

@@ -26,30 +26,48 @@ export default function Tarefa() {
   }, []);
 
   return (
-    <div className={'container'}>
-      <div className="row py-4">
+  <div className="container-fluid" style={{ height: 'calc(100vh - 50px)' }}>
+    <div className="row" style={{ height: 'calc(100vh - 50px)' }}>
 
-        {/*Seção da tarefa*/}
-        <div className="col-7">
-          <h3 className={"mb-2"}>{tarefa.nome}</h3>
-          <div className={"mb-2"}><BotaoStatus status={tarefa.id_status}/></div>
-          <p>{tarefa.descricao}</p>
+      {/* Seção da tarefa */}
+      <div className="col-7 p-4 ps-5">
+        <h3 className="mb-2">{tarefa.nome}</h3>
+        <div className="mb-2">
+          <BotaoStatus status={tarefa.id_status} />
         </div>
+        <p>{tarefa.descricao}</p>
+      </div>
 
+      {/* Seção dos comentários */}
+      <div className="col-5 bg-light m-0 p-3 d-flex flex-column" style={{ height: '100%' }}>
 
-        {/*Seção dos comentários*/}
-        <div className="col-5 bg-light rounded">
-          <div className="p-3">
-            {comentarios.map((comentario) => (
-            <CartaoComentario key={comentario.id} comentario={comentario}/>
+        <div
+          className="p-3 overflow-auto"
+          id="comentarios"
+          style={{ flex: '1 1 auto', minHeight: 0 }}
+        >
+          {comentarios.map((comentario) => (
+            <CartaoComentario key={comentario.id} comentario={comentario} />
           ))}
-
-          </div>
-          <div></div>
         </div>
 
+        <div className="p-3 mt-auto" style={{ height: '200px' }}>
+          <Form>
+            <Form.Group className="mb-3">
+              <Form.Control as="textarea" rows={3} placeholder="Digite seu comentário" />
+            </Form.Group>
+            <div className="d-flex">
+              <Button variant="primary" className="ms-auto" type="submit">
+                Comentar
+              </Button>
+            </div>
+          </Form>
+        </div>
 
       </div>
+
     </div>
-  )
+  </div>
+);
+
 }
