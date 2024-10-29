@@ -43,7 +43,6 @@ export default function Tarefa() {
 
         <div
           className="p-3 overflow-auto"
-          id="comentarios"
           style={{ flex: '1 1 auto', minHeight: 0 }}
         >
           {comentarios.map((comentario) => (
