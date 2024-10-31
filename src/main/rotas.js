@@ -1,6 +1,6 @@
 import React, {useContext, useEffect} from "react";
 import {BrowserRouter as Router, Navigate, Outlet, Route, Routes} from 'react-router-dom'
-import AppNavbar from "../components/navbar";
+import AppNavbar from "../components/app/navbar";
 import CadastroProjeto from "../views/cadastroProjeto";
 import MeusProjetos from "../views/meusProjetos";
 import MinhaConta from "../views/minhaConta";
@@ -19,7 +19,7 @@ function Rotas() {
           <Route path="/nova-tarefa" element={<CadastroTarefa/>}/>
           <Route path="/projetos" element={<MeusProjetos/>}/>
           <Route path="/conta" element={<MinhaConta/>}/>
-          <Route path="/tarefa" element={<Tarefa/>}/>
+          <Route path="/tarefa/:id" element={<Tarefa />} />
           <Route path="/" element={<Home/>}/>
         </Routes>
       </div>

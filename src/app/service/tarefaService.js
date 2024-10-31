@@ -8,16 +8,9 @@ export const tarefaPrototype = {
   "id_status": 1,
 }
 
-export async function consultarPorId() {
-  return {
-    "id": 1,
-    "data_criacao": "2021-10-14T00:00:00",
-    "descricao": "Deve ser implementado a funcionalidade de login, onde o usuário deve informar o email e senha para acessar o sistema.",
-    "is_deleted": false,
-    "nome": "Implementar funcionalidade de login",
-    "id_projeto": 1,
-    "id_status": 3
-  };
+export async function consultarPorId(id) {
+  const tarefas = await consultarTarefas();
+  return tarefas.find(t => t.id == id);
 }
 
 export async function consultarTarefas() {

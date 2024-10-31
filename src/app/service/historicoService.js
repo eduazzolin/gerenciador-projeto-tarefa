@@ -55,7 +55,7 @@ export async function consultarHistoricoPorProjeto() {
       "id": 5,
       "data_criacao": "2021-10-14T00:00:00",
       "id_status_antigo": 5,
-      "id_status_novo": 6,
+      "id_status_novo": 2,
       "tarefa": {
         "id": 3,
         "nome": "Tarefa 3"
@@ -65,11 +65,12 @@ export async function consultarHistoricoPorProjeto() {
       "id": 6,
       "data_criacao": "2021-10-14T00:00:00",
       "id_status_antigo": 6,
-      "id_status_novo": 7,
+      "id_status_novo": 1,
       "tarefa": {
         "id": 2,
         "nome": "Tarefa 2"
       }
-    }
+    },
+
   ];
 }

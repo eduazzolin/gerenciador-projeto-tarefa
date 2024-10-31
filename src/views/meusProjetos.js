@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import TituloPagina from "../components/tituloPagina";
+import TituloPagina from "../components/app/tituloPagina";
 import { Button, Form } from "react-bootstrap";
 import { consultarProjetos, projetoPrototype } from "../app/service/projetoService";
 import CartaoProjeto from "../components/cartaoProjeto/cartaoProjeto";

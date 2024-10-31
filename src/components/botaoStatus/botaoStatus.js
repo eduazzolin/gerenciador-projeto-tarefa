@@ -2,8 +2,9 @@ import React, {useEffect, useState} from 'react';
 import './botaoStatusStyle.css';
 import Dropdown from "react-bootstrap/Dropdown";
 import {consultarStatusENUM} from "../../app/service/statusService";
+import {Button} from "react-bootstrap";
 
-export default function BotaoStatus({status}) {
+export default function BotaoStatus({status, clicavel}) {
   const [currentStatus, setCurrentStatus] = useState(null);
   const [statusENUM, setStatusENUM] = useState([]);
 
@@ -34,23 +35,32 @@ export default function BotaoStatus({status}) {
   };
 
   return (
-    <Dropdown onSelect={handleSelect}>
-      <Dropdown.Toggle
-        variant={currentStatus ? currentStatus.cor : 'secondary'}
-        id="dropdown-basic"
-      >
-        {currentStatus ? currentStatus.nome : 'Selecione um status'}
-      </Dropdown.Toggle>
-      <Dropdown.Menu>
-        {statusENUM.map((statusItem) => (
-          <Dropdown.Item
-            key={statusItem.id}
-            eventKey={statusItem.id}
-          >
-            {statusItem.nome}
-          </Dropdown.Item>
-        ))}
-      </Dropdown.Menu>
-    </Dropdown>
+    clicavel ? (
+      <Dropdown onSelect={handleSelect}>
+        <Dropdown.Toggle
+          variant={currentStatus ? currentStatus.cor : 'secondary'}
+          id="dropdown-basic"
+        >
+          {currentStatus ? currentStatus.nome : 'Selecione um status'}
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          {statusENUM.map((statusItem) => (
+            <Dropdown.Item
+              key={statusItem.id}
+              eventKey={statusItem.id}
+            >
+              {statusItem.nome}
+            </Dropdown.Item>
+          ))}
+        </Dropdown.Menu>
+      </Dropdown>
+    ) : (
+      <div className="botao-status">
+        <Button className={`btn-${currentStatus ? currentStatus.cor : 'secondary'}`} >
+          {currentStatus ? currentStatus.nome : ''}
+        </Button>
+      </div>
+    )
   );
+
 }

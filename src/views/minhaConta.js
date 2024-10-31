@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from "react";
-import TituloPagina from "../components/tituloPagina";
+import TituloPagina from "../components/app/tituloPagina";
 import {Button, Form} from "react-bootstrap";
 
 function MinhaConta() {
