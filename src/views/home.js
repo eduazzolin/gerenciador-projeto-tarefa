@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import TituloPagina from "../components/app/tituloPagina";
 import {Button, Form} from "react-bootstrap";
 import {consultarProjetos, projetoPrototype} from "../app/service/projetoService";
-import {consultarStatusENUM} from "../app/service/statusService";
+import {consultarStatusENUM, statusPrototype} from "../app/service/statusService";
 import {consultarHistoricoPorProjeto, historicoPrototype} from "../app/service/historicoService";
 import {consultarTarefas, tarefaPrototype} from "../app/service/tarefaService";
 import CartaoHistorico from "../components/cartaoHistorico/cartaoHistorico";
@@ -13,28 +13,58 @@ export default function Home() {
   const [projetos, setProjetos] = useState([projetoPrototype]);
   const [historico, setHistorico] = useState([historicoPrototype]);
   const [tarefas, setTarefas] = useState([tarefaPrototype]);
+  const [tarefasAgrupadas, setTarefasAgrupadas] = useState([{status: {statusPrototype}, tarefas: [tarefaPrototype]}]);
   const [projetoSelecionado, setProjetoSelecionado] = useState(projetoPrototype);
   const [statusENUM, setStatusENUM] = useState([]);
-  const navigate = useNavigate(); // Inicializa o hook useNavigate
+  const [isArquivadas, setIsArquivadas] = useState(false);
+  const navigate = useNavigate();
 
-  const mountPage = async () => {
-    try {
-      const response_projetos = await consultarProjetos()
-      const response_historico = await consultarHistoricoPorProjeto()
-      const response_tarefas = await consultarTarefas()
-      const responseStatus = await consultarStatusENUM()
-      setProjetos(response_projetos)
-      setHistorico(response_historico)
-      setTarefas(response_tarefas)
-      setStatusENUM(responseStatus)
-    } catch (error) {
-      console.log("Erro ao buscar dados", error)
-    }
+  function filtrarApenasArquivadas() {
+    setIsArquivadas(true);
+    setTarefasAgrupadas(agruparTarefasPorStatus(tarefas, statusENUM))
+    setTarefasAgrupadas(prevState => {
+      const newState = {"5": prevState["5"]};
+      return newState;
+    });
+  }
+
+  function filtrarApenasNaoArquivadas() {
+    setIsArquivadas(false);
+    setTarefasAgrupadas(agruparTarefasPorStatus(tarefas, statusENUM))
+    setTarefasAgrupadas(prevState => {
+      const newState = {...prevState};
+      delete newState["5"];
+      return newState;
+    });
   }
 
   useEffect(() => {
+    const mountPage = async () => {
+      try {
+        const response_projetos = await consultarProjetos();
+        const response_historico = await consultarHistoricoPorProjeto();
+        const response_tarefas = await consultarTarefas();
+        const responseStatus = await consultarStatusENUM();
+
+        setProjetos(response_projetos);
+        setHistorico(response_historico);
+        setTarefas(response_tarefas);
+        setStatusENUM(responseStatus);
+      } catch (error) {
+        console.log("Erro ao buscar dados", error);
+      }
+    };
+
     mountPage();
   }, []);
+
+  useEffect(() => {
+    if (tarefas && statusENUM) {
+      setTarefasAgrupadas(agruparTarefasPorStatus(tarefas, statusENUM));
+      filtrarApenasNaoArquivadas();
+    }
+  }, [tarefas]);
+
 
   function agruparTarefasPorStatus(tarefas, statusENUM) {
     return tarefas.reduce((acc, tarefa) => {
@@ -54,58 +84,61 @@ export default function Home() {
     }, {});
   }
 
-  const tarefasAgrupadas = agruparTarefasPorStatus(tarefas, statusENUM);
-  console.log(tarefasAgrupadas);
 
   return (
-  <div className="container-fluid" style={{ height: 'calc(100vh - 50px)' }}>
-    <div className="row" style={{ height: '100%' }}>
+    <div className="container-fluid" style={{height: 'calc(100vh - 50px)'}}>
+      <div className="row" style={{height: '100%'}}>
 
-      {/* Coluna do histórico */}
-      <div className="col-3 bg-light m-0 p-4" style={{ height: '100%', overflow: 'hidden' }}>
-        <Form.Group className="mb-3">
-          <Form.Label>Projeto</Form.Label>
-          <Form.Select
-            aria-label="Projeto"
-            value={projetoSelecionado.id}
-            onChange={event => {
-              setProjetoSelecionado(event.target.value);
-            }}>
-            {projetos.map((projeto, index) => (
-              <option key={index} value={projeto.id}>{projeto.nome}</option>
+        {/* Coluna do histórico */}
+        <div className="col-3 bg-light m-0 p-4" style={{height: '100%', overflow: 'hidden'}}>
+          <Form.Group className="mb-3">
+            <Form.Label>Projeto</Form.Label>
+            <Form.Select
+              aria-label="Projeto"
+              value={projetoSelecionado.id}
+              onChange={event => {
+                setProjetoSelecionado(event.target.value);
+              }}>
+              {projetos.map((projeto, index) => (
+                <option key={index} value={projeto.id}>{projeto.nome}</option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+
+          <div
+            className="p-3 overflow-auto"
+            style={{maxHeight: 'calc(100% - 100px)', flex: '1 1 auto'}}
+          >
+            {historico.map((h) => (
+              <CartaoHistorico key={h.id} historico={h}/>
             ))}
-          </Form.Select>
-        </Form.Group>
-
-        <div
-          className="p-3 overflow-auto"
-          style={{ maxHeight: 'calc(100% - 100px)', flex: '1 1 auto' }}
-        >
-          {historico.map((h) => (
-            <CartaoHistorico key={h.id} historico={h} />
-          ))}
+          </div>
         </div>
+
+        {/* Coluna das tarefas */}
+        <div className="col-9 p-0" style={{height: '100%', overflow: 'auto'}}>
+          <div className="d-flex flex-row gap-1 ms-3">
+          <div>
+            <Button variant="danger" className="my-3" onClick={() => navigate('/nova-tarefa/')}>Nova Tarefa</Button>
+          </div>
+          <div>
+            <Button variant="dark" className="my-3" onClick={isArquivadas? filtrarApenasNaoArquivadas : filtrarApenasArquivadas}>{isArquivadas? 'Todas' : 'Arquivadas'}</Button>
+          </div>
+          </div>
+          <div className="px-3">
+            {Object.values(tarefasAgrupadas).map((grupo, index) => (
+              <BlocoTarefasPorStatus
+                key={index}
+                status={grupo.status}
+                tarefas={grupo.tarefas}
+                index={index}
+              />
+            ))}
+          </div>
+        </div>
+
       </div>
-
-      {/* Coluna das tarefas */}
-      <div className="col-9 p-0" style={{ height: '100%', overflow: 'auto' }}>
-        <div>
-          <Button variant="danger" className="m-3" onClick={() => navigate('/nova-tarefa/')}>Nova Tarefa</Button>
-        </div>
-        <div className="px-3">
-          {Object.values(tarefasAgrupadas).map((grupo, index) => (
-            <BlocoTarefasPorStatus
-              key={index}
-              status={grupo.status}
-              tarefas={grupo.tarefas}
-              index={index}
-            />
-          ))}
-        </div>
-      </div>
-
     </div>
-  </div>
-);
+  );
 
 }
