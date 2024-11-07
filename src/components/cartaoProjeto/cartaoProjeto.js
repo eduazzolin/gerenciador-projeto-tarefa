@@ -1,12 +1,18 @@
 import React from 'react';
 import './cartaoProjetoStyle.css';
-import {Button} from "react-bootstrap";
+import { Button } from "react-bootstrap";
+import { useNavigate } from 'react-router-dom';
 
 export default function CartaoProjeto({ projeto, index }) {
+  const navigate = useNavigate();
+
+  const handleEditarProjeto = () => {
+    navigate('/novo-projeto', { state: { projeto } });
+  };
+
   return (
     <div className="card_container bg-light border rounded mb-3" key={index}>
       <div className="row p-3">
-
         <div className="col-12">
           <h5 className="mb-2">{projeto.nome}</h5>
         </div>
@@ -18,13 +24,16 @@ export default function CartaoProjeto({ projeto, index }) {
         </div>
 
         <div className="col-12 d-flex gap-2 justify-content-end">
-          <Button size="sm"  variant="danger" className="mt-3">Remover</Button>
-          <Button size="sm"  variant="primary" className="mt-3">Editar</Button>
+          <Button size="sm" variant="danger" className="mt-3">Remover</Button>
+          <Button
+            size="sm"
+            variant="primary"
+            className="mt-3"
+            onClick={handleEditarProjeto}
+          >
+            Editar
+          </Button>
         </div>
-
-
-
-
       </div>
     </div>
   );

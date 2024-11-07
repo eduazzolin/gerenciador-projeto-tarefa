@@ -5,12 +5,17 @@ import {consultarPorId, tarefaPrototype} from "../app/service/tarefaService";
 import BotaoStatus from "../components/botaoStatus/botaoStatus";
 import {comentarioPrototype, consultarComentariosPorId} from "../app/service/comentarioService";
 import CartaoComentario from "../components/cartaoComentario/cartaoComentario";
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 export default function Tarefa() {
   const {id} = useParams();
   const [tarefa, setTarefa] = useState(tarefaPrototype);
   const [comentarios, setComentarios] = useState([comentarioPrototype]);
+  const navigate = useNavigate();
+
+  const handleEditarTarefa = () => {
+    navigate('/nova-tarefa', {state: {tarefa}});
+  };
 
   const mountPage = async () => {
     try {
@@ -37,13 +42,26 @@ export default function Tarefa() {
         {/* Verifica se a tarefa está carregada */}
         {tarefa ? (
           <>
+
             {/* Seção da tarefa */}
-            <div className="col-7 p-4 ps-5">
+            <div className="col-7 p-4 ps-5 d-flex flex-column" style={{height: '100%'}}>
+
               <h3 className="mb-2">{tarefa.nome}</h3>
-              <div className="mb-2">
+
+              <div className="mb-2 ">
                 <BotaoStatus status={tarefa.id_status} clicavel={true}/>
               </div>
-              <p>{tarefa.descricao}</p>
+
+              <div className="overflow-auto my-3" style={{flex: '1 1 auto', minHeight: 0}}>
+                <p>{tarefa.descricao}</p>
+              </div>
+
+              <div className="d-flex mt-3">
+                <Button variant="outline-dark" className="ms-auto" onClick={handleEditarTarefa}>
+                  Editar
+                </Button>
+              </div>
+
             </div>
 
             {/* Seção dos comentários */}
@@ -59,7 +77,7 @@ export default function Tarefa() {
                     <Form.Control as="textarea" rows={3} placeholder="Digite seu comentário"/>
                   </Form.Group>
                   <div className="d-flex">
-                    <Button variant="primary" className="ms-auto" type="submit">
+                    <Button variant="outline-dark" className="ms-auto" type="submit">
                       Comentar
                     </Button>
                   </div>

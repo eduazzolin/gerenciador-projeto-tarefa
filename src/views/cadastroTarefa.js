@@ -4,9 +4,15 @@ import {Button, Form} from "react-bootstrap";
 import {tarefaPrototype} from "../app/service/tarefaService";
 import {consultarProjetos} from "../app/service/projetoService";
 import {consultarStatusENUM} from "../app/service/statusService";
+import {useLocation, useNavigate} from "react-router-dom";
 
 function CadastroTarefa() {
-  const [tarefa, setTarefa] = useState(tarefaPrototype);
+
+  const location = useLocation();
+  const navigate = useNavigate();
+  const tarefaRecebida = location.state?.tarefa;
+
+  const [tarefa, setTarefa] = useState(tarefaRecebida || tarefaPrototype);
   const [projetos, setProjetos] = useState([]);
   const [status, setStatus] = useState([]);
 
@@ -25,9 +31,26 @@ function CadastroTarefa() {
     mountPage();
   }, []);
 
+  useEffect(() => {
+    if (tarefaRecebida) {
+      setTarefa(tarefaRecebida);
+    }
+  }, [tarefaRecebida]);
+
+  const handleSave = () => {
+    if (tarefa.id) {
+      // Lógica para atualizar o tarefa existente
+      console.log('Atualizando tarefa:', tarefa);
+    } else {
+      // Lógica para criar um novo tarefa
+      console.log('Criando novo tarefa:', tarefa);
+    }
+    navigate(-1);
+  };
+
   return (
     <div className={'container'}>
-      <TituloPagina titulo={'Novo Tarefa'}/>
+      <TituloPagina titulo={'Nova Tarefa'}/>
 
       <div className="row">
 
@@ -92,7 +115,7 @@ function CadastroTarefa() {
             </Form.Group>
 
             <div className="d-flex justify-content-end">
-              <Button className="ms-auto mt-3" variant="primary" onClick={() => console.log(tarefa)}> Salvar </Button>
+              <Button className="ms-auto mt-3" variant="primary" onClick={handleSave}> Salvar </Button>
             </div>
           </Form>
 
