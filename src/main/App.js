@@ -1,10 +1,13 @@
 import React from 'react';
 import Rotas from "./rotas";
+import ProvedorAutenticacao from "./provedorAutenticacao";
 
 function App() {
   return (
     <div>
-      <Rotas/>
+      <ProvedorAutenticacao>
+        <Rotas/>
+      </ProvedorAutenticacao>
     </div>
   );
 }
