@@ -1,25 +1,27 @@
 import React, { useEffect, useState } from "react";
 import TituloPagina from "../components/app/tituloPagina";
 import { Button, Form } from "react-bootstrap";
-import { consultarProjetos, projetoPrototype } from "../app/service/projetoService";
+import ProjetoService, { projetoPrototype } from "../app/service/projetoService";
 import CartaoProjeto from "../components/cartaoProjeto/cartaoProjeto";
 import {useNavigate} from "react-router-dom";
 
 function MeusProjetos() {
   const [projetos, setProjetos] = useState([]);
   const navigate = useNavigate();
+  const service = new ProjetoService();
 
-  const mountPage = async () => {
-    try {
-      const responseProjetos = await consultarProjetos();
-      setProjetos(responseProjetos);
-    } catch (error) {
-      console.log("Erro ao buscar dados", error);
-    }
-  };
 
   useEffect(() => {
-    mountPage();
+
+    service.consultar().then(response => {
+      setProjetos(response.data);
+    }).catch(error => {
+      console.log(error);
+    });
+
+
+
+
   }, []);
 
   return (

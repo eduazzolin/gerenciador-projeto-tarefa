@@ -20,24 +20,23 @@ function CadastroProjeto() {
 
   const handleSave = () => {
     if (projeto.id) {
-      // Lógica para atualizar o projeto existente
       console.log('Atualizando projeto:', projeto);
     } else {
-      // Lógica para criar um novo projeto
       console.log('Criando novo projeto:', projeto);
-      service
-        .salvar(projeto)
-        .then(response => {
-          mensagemSucesso('Projeto cadastrado com sucesso!');
-          navigate(-1);
-        })
-        .catch(error => {
-          mensagemErro('Erro ao criar projeto');
-          console.log(error);
-        })
     }
-    // Após salvar, redirecionar para "Meus Projetos"
-  };
+    service
+      .salvar(projeto)
+      .then(response => {
+        mensagemSucesso('Projeto cadastrado com sucesso!');
+        navigate(-1);
+      })
+      .catch(error => {
+        mensagemErro('Erro ao criar projeto');
+        console.log(error);
+      })
+  }
+  // Após salvar, redirecionar para "Meus Projetos"
+
 
   return (
     <div className={'container'}>

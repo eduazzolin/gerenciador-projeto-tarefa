@@ -23,7 +23,7 @@ class ProjetoService extends ApiService {
     }
 
     consultar() {
-        return this.get();
+        return this.get('');
     }
 
 
