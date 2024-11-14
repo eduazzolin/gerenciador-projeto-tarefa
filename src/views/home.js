@@ -1,10 +1,10 @@
 import React, {useContext, useEffect, useState} from "react";
 import TituloPagina from "../components/app/tituloPagina";
 import {Button, Form} from "react-bootstrap";
-import {consultarProjetos, projetoPrototype} from "../app/service/projetoService";
+import ProjetoService, {consultarProjetos, projetoPrototype} from "../app/service/projetoService";
 import {consultarStatusENUM, statusPrototype} from "../app/service/statusService";
 import {consultarHistoricoPorProjeto, historicoPrototype} from "../app/service/historicoService";
-import {consultarTarefas, tarefaPrototype} from "../app/service/tarefaService";
+import {consultarTarefas, tarefaPrototype, TarefaService} from "../app/service/tarefaService";
 import CartaoHistorico from "../components/cartaoHistorico/cartaoHistorico";
 import BlocoTarefasPorStatus from "../components/blocoTarefasPorStatus/blocoTarefasPorStatus";
 import {useNavigate} from "react-router-dom";
@@ -18,6 +18,9 @@ export default function Home() {
   const [statusENUM, setStatusENUM] = useState([]);
   const [isArquivadas, setIsArquivadas] = useState(false);
   const navigate = useNavigate();
+
+  const projetoService = new ProjetoService();
+  const tarefaService = new TarefaService();
 
   function filtrarApenasArquivadas() {
     setIsArquivadas(true);
@@ -38,17 +41,33 @@ export default function Home() {
     });
   }
 
+function atualizarTarefas() {
+    tarefaService.consultarPorProjeto(projetoSelecionado.id).then(response => {
+      setTarefas(response.data);
+    }).catch(error => {
+      console.error('Erro ao buscar tarefas', error);
+    });
+}
   useEffect(() => {
+
+    projetoService.consultar().then(response => {
+      setProjetos(response.data);
+    }).catch(error => {
+      console.error('Erro ao buscar projetos', error);
+    });
+
+    tarefaService.consultarPorProjeto(projetoSelecionado.id).then(response => {
+      setTarefas(response.data);
+    }).catch(error => {
+      console.error('Erro ao buscar tarefas', error);
+    });
+
     const mountPage = async () => {
       try {
-        const response_projetos = await consultarProjetos();
         const response_historico = await consultarHistoricoPorProjeto();
-        const response_tarefas = await consultarTarefas();
         const responseStatus = await consultarStatusENUM();
 
-        setProjetos(response_projetos);
         setHistorico(response_historico);
-        setTarefas(response_tarefas);
         setStatusENUM(responseStatus);
       } catch (error) {
         console.log("Erro ao buscar dados", error);
@@ -98,6 +117,7 @@ export default function Home() {
               value={projetoSelecionado.id}
               onChange={event => {
                 setProjetoSelecionado(event.target.value);
+                atualizarTarefas();
               }}>
               {projetos.map((projeto, index) => (
                 <option key={index} value={projeto.id}>{projeto.nome}</option>

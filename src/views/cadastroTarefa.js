@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from "react";
 import TituloPagina from "../components/app/tituloPagina";
 import {Button, Form} from "react-bootstrap";
 import {tarefaPrototype} from "../app/service/tarefaService";
-import {consultarProjetos} from "../app/service/projetoService";
+import ProjetoService, {consultarProjetos} from "../app/service/projetoService";
 import {consultarStatusENUM} from "../app/service/statusService";
 import {useLocation, useNavigate} from "react-router-dom";
 
@@ -15,20 +15,20 @@ function CadastroTarefa() {
   const [tarefa, setTarefa] = useState(tarefaRecebida || tarefaPrototype);
   const [projetos, setProjetos] = useState([]);
   const [status, setStatus] = useState([]);
+  const projetoService = new ProjetoService();
 
-  const mountPage = async () => {
-    try {
-      const response_projetos = await consultarProjetos()
-      const response_status = await consultarStatusENUM()
-      setProjetos(response_projetos)
-      setStatus(response_status)
-    } catch (error) {
-      console.log("Erro ao buscar dados", error)
-    }
-  }
 
   useEffect(() => {
-    mountPage();
+    projetoService.consultar().then(response => {
+      setProjetos(response.data);
+    }).catch(error => {
+      console.error('Erro ao buscar projetos', error);
+    });
+
+    consultarStatusENUM().then(response => {
+      setStatus(response);
+    })
+
   }, []);
 
   useEffect(() => {
