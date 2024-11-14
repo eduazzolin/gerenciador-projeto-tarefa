@@ -1,5 +1,4 @@
 import ApiService from "./apiService";
-import UsuarioService from "./usuarioService";
 
 export const projetoPrototype = {
     "id": 0,
@@ -26,6 +25,9 @@ class ProjetoService extends ApiService {
         return this.get('');
     }
 
+    deletar(id) {
+        return this.delete('/' + id);
+    }
 
 }
 
