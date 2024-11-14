@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import TituloPagina from "../components/app/tituloPagina";
-import { Button, Form } from "react-bootstrap";
-import { projetoPrototype } from "../app/service/projetoService";
-import { useLocation, useNavigate } from 'react-router-dom';
+import {Button, Form} from "react-bootstrap";
+import ProjetoService from "../app/service/projetoService";
+import {useLocation, useNavigate} from 'react-router-dom';
+import {mensagemErro, mensagemSucesso} from "../components/app/toastr";
 
 function CadastroProjeto() {
   const location = useLocation();
   const navigate = useNavigate();
   const projetoRecebido = location.state?.projeto;
-  const [projeto, setProjeto] = useState(projetoRecebido || projetoPrototype);
+  const [projeto, setProjeto] = useState(projetoRecebido || {});
+  const service = new ProjetoService();
 
   useEffect(() => {
     if (projetoRecebido) {
@@ -23,14 +25,23 @@ function CadastroProjeto() {
     } else {
       // Lógica para criar um novo projeto
       console.log('Criando novo projeto:', projeto);
+      service
+        .salvar(projeto)
+        .then(response => {
+          mensagemSucesso('Projeto cadastrado com sucesso!');
+          navigate(-1);
+        })
+        .catch(error => {
+          mensagemErro('Erro ao criar projeto');
+          console.log(error);
+        })
     }
     // Após salvar, redirecionar para "Meus Projetos"
-    navigate(-1);
   };
 
   return (
     <div className={'container'}>
-      <TituloPagina titulo={projeto.id ? 'Editar Projeto' : 'Novo Projeto'} />
+      <TituloPagina titulo={projeto.id ? 'Editar Projeto' : 'Novo Projeto'}/>
 
       <div className="row">
         <div className="col-12">
@@ -41,7 +52,7 @@ function CadastroProjeto() {
                 type="text"
                 placeholder="Digite o título do projeto"
                 value={projeto.nome}
-                onChange={event => setProjeto({ ...projeto, nome: event.target.value })}
+                onChange={event => setProjeto({...projeto, nome: event.target.value})}
               />
             </Form.Group>
 
@@ -51,7 +62,7 @@ function CadastroProjeto() {
                 as="textarea"
                 rows={9}
                 value={projeto.descricao}
-                onChange={event => setProjeto({ ...projeto, descricao: event.target.value })}
+                onChange={event => setProjeto({...projeto, descricao: event.target.value})}
               />
             </Form.Group>
 

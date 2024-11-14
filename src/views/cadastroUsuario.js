@@ -34,54 +34,56 @@ function CadastroUsuario() {
   }
 
   return (
-    <div className="row mt-4">
+    <div className="container">
+      <div className="row mt-4 d-flex">
 
-      <div className="col-12">
-        <h2 className="text-center">Login</h2>
-        <Form>
+        <div className="col-lg-6 col-12 mx-auto">
+          <h2 className="text-center">Cadastro</h2>
+          <Form>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Nome</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Nome do usuário"
-              value={usuario.nome}
-              onChange={event => setUsuario({...usuario, nome: event.target.value})}/>
-          </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Nome</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Nome do usuário"
+                value={usuario.nome}
+                onChange={event => setUsuario({...usuario, nome: event.target.value})}/>
+            </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Email</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Email do usuário"
-              value={usuario.email}
-              onChange={event => setUsuario({...usuario, email: event.target.value})}/>
-          </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Email do usuário"
+                value={usuario.email}
+                onChange={event => setUsuario({...usuario, email: event.target.value})}/>
+            </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Senha</Form.Label>
-            <Form.Control
-              type="password"
-              value={usuario.senha}
-              onChange={event => setUsuario({...usuario, senha: event.target.value})}/>
-          </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Senha</Form.Label>
+              <Form.Control
+                type="password"
+                value={usuario.senha}
+                onChange={event => setUsuario({...usuario, senha: event.target.value})}/>
+            </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Repita a senha</Form.Label>
-            <Form.Control
-              type="password"
-              value={usuario.senhaRepeticao}
-              onChange={event => setUsuario({...usuario, senhaRepeticao: event.target.value})}/>
-          </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Repita a senha</Form.Label>
+              <Form.Control
+                type="password"
+                value={usuario.senhaRepeticao}
+                onChange={event => setUsuario({...usuario, senhaRepeticao: event.target.value})}/>
+            </Form.Group>
 
-          <div className="d-flex">
-            <Button className="mx-auto mt-3" variant="outline-dark"
-                    onClick={() => cadastrar()}> Cadastrar </Button>
-          </div>
+            <div className="d-flex">
+              <Button className="mx-auto mt-3" variant="outline-dark"
+                      onClick={() => cadastrar()}> Cadastrar </Button>
+            </div>
 
-        </Form>
+          </Form>
+        </div>
+
       </div>
-
     </div>
   );
 }

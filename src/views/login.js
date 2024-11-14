@@ -33,9 +33,9 @@ function Login() {
 
   return (
     <div className="container">
-      <div className="row mt-4">
+      <div className="row mt-4 d-flex">
 
-        <div className="col-12">
+        <div className="col-lg-6 col-12 mx-auto">
           <h2 className="text-center">Login</h2>
           <Form>
             <Form.Group className="mb-3">

@@ -16,10 +16,12 @@ function AppNavbar() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
-            <Nav.Link as={NavLink} to="/">Home</Nav.Link>
-            <Nav.Link as={NavLink} to="/projetos">Meus Projetos</Nav.Link>
-            <Nav.Link as={NavLink} to="/conta">Minha Conta</Nav.Link>
-            <Nav.Link as={NavLink} onClick={authContext.encerrarSessao} to="/login" > Sair </Nav.Link>
+            <Nav.Link hidden={!authContext.isAutenticado} as={NavLink} to="/">Home</Nav.Link>
+            <Nav.Link hidden={!authContext.isAutenticado} as={NavLink} to="/projetos">Meus Projetos</Nav.Link>
+            <Nav.Link hidden={!authContext.isAutenticado} as={NavLink} to="/conta">Minha Conta</Nav.Link>
+            <Nav.Link hidden={!authContext.isAutenticado} as={NavLink} onClick={authContext.encerrarSessao} to="/login" > Sair </Nav.Link>
+            <Nav.Link hidden={authContext.isAutenticado} as={NavLink} to="/login" > Login </Nav.Link>
+            <Nav.Link hidden={authContext.isAutenticado} as={NavLink} to="/cadastro-usuarios" > Cadastro </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>
