@@ -70,7 +70,7 @@ export default function Home() {
 
   function agruparTarefasPorStatus(tarefas, statusENUM) {
     return tarefas.reduce((acc, tarefa) => {
-      const statusObj = statusENUM.find(status => status.id === tarefa.id_status);
+      const statusObj = statusENUM.find(status => status.id === tarefa.idStatus);
       if (!statusObj) {
         // console.warn(`Status com id ${tarefa.id_status} não encontrado em statusENUM.`);
         return acc; // Ignora se o status não for encontrado

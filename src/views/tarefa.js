@@ -49,7 +49,7 @@ export default function Tarefa() {
               <h3 className="mb-2">{tarefa.nome}</h3>
 
               <div className="mb-2 ">
-                <BotaoStatus status={tarefa.id_status} clicavel={true}/>
+                <BotaoStatus status={tarefa.idStatus} clicavel={true}/>
               </div>
 
               <div className="overflow-auto my-3" style={{flex: '1 1 auto', minHeight: 0}}>
