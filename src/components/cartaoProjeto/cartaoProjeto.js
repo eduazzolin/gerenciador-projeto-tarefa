@@ -16,6 +16,10 @@ export default function CartaoProjeto({projeto, index, deleteAction}) {
     deleteAction(projeto);
   }
 
+  const handleSelecionarProjeto = () => {
+    navigate('/home/' + projeto.id);
+  }
+
   return (
     <div className="card_container bg-light border rounded mb-3" key={index}>
 
@@ -44,6 +48,14 @@ export default function CartaoProjeto({projeto, index, deleteAction}) {
             onClick={handleEditarProjeto}
           >
             Editar
+          </Button>
+          <Button
+            size="sm"
+            variant="outline-dark"
+            className="mt-3"
+            onClick={handleSelecionarProjeto}
+          >
+            Selecionar
           </Button>
         </div>
       </div>

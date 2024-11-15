@@ -7,10 +7,10 @@ import {consultarHistoricoPorProjeto, historicoPrototype} from "../app/service/h
 import {consultarTarefas, tarefaPrototype, TarefaService} from "../app/service/tarefaService";
 import CartaoHistorico from "../components/cartaoHistorico/cartaoHistorico";
 import BlocoTarefasPorStatus from "../components/blocoTarefasPorStatus/blocoTarefasPorStatus";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 export default function Home() {
-  const [projetos, setProjetos] = useState([projetoPrototype]);
+  const {idProjeto} = useParams();
   const [historico, setHistorico] = useState([historicoPrototype]);
   const [tarefas, setTarefas] = useState([tarefaPrototype]);
   const [tarefasAgrupadas, setTarefasAgrupadas] = useState([{status: {statusPrototype}, tarefas: [tarefaPrototype]}]);
@@ -41,40 +41,23 @@ export default function Home() {
     });
   }
 
-function atualizarTarefas() {
-    tarefaService.consultarPorProjeto(projetoSelecionado.id).then(response => {
-      setTarefas(response.data);
-    }).catch(error => {
-      console.error('Erro ao buscar tarefas', error);
-    });
-}
   useEffect(() => {
+    consultarHistoricoPorProjeto().then(response => {
+      setHistorico(response);
+    })
 
-    projetoService.consultar().then(response => {
-      setProjetos(response.data);
-    }).catch(error => {
-      console.error('Erro ao buscar projetos', error);
-    });
+    consultarStatusENUM().then(response => {
+      setStatusENUM(response);
+    })
 
-    tarefaService.consultarPorProjeto(projetoSelecionado.id).then(response => {
+    console.log('idProjeto:', idProjeto);
+    tarefaService.consultarPorProjeto(idProjeto).then(response => {
       setTarefas(response.data);
+      console.log('Tarefas:', response.data);
     }).catch(error => {
       console.error('Erro ao buscar tarefas', error);
     });
 
-    const mountPage = async () => {
-      try {
-        const response_historico = await consultarHistoricoPorProjeto();
-        const responseStatus = await consultarStatusENUM();
-
-        setHistorico(response_historico);
-        setStatusENUM(responseStatus);
-      } catch (error) {
-        console.log("Erro ao buscar dados", error);
-      }
-    };
-
-    mountPage();
   }, []);
 
   useEffect(() => {
@@ -89,7 +72,7 @@ function atualizarTarefas() {
     return tarefas.reduce((acc, tarefa) => {
       const statusObj = statusENUM.find(status => status.id === tarefa.id_status);
       if (!statusObj) {
-        console.warn(`Status com id ${tarefa.id_status} não encontrado em statusENUM.`);
+        // console.warn(`Status com id ${tarefa.id_status} não encontrado em statusENUM.`);
         return acc; // Ignora se o status não for encontrado
       }
       if (!acc[statusObj.id]) {
@@ -106,28 +89,17 @@ function atualizarTarefas() {
 
   return (
     <div className="container-fluid" style={{height: 'calc(100vh - 50px)'}}>
+      <h1>{idProjeto}wqwq</h1>
       <div className="row" style={{height: '100%'}}>
 
         {/* Coluna do histórico */}
         <div className="col-3 bg-light m-0 p-4" style={{height: '100%', overflow: 'hidden'}}>
-          <Form.Group className="mb-3">
-            <Form.Label>Projeto</Form.Label>
-            <Form.Select
-              aria-label="Projeto"
-              value={projetoSelecionado.id}
-              onChange={event => {
-                setProjetoSelecionado(event.target.value);
-                atualizarTarefas();
-              }}>
-              {projetos.map((projeto, index) => (
-                <option key={index} value={projeto.id}>{projeto.nome}</option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-
+          <div>
+            <h2>projeto tal</h2>
+          </div>
           <div
             className="p-3 overflow-auto"
-            style={{maxHeight: 'calc(100% - 100px)', flex: '1 1 auto'}}
+            style={{maxHeight: 'calc(100% )', flex: '1 1 auto'}}
           >
             {historico.map((h) => (
               <CartaoHistorico key={h.id} historico={h}/>
@@ -138,12 +110,13 @@ function atualizarTarefas() {
         {/* Coluna das tarefas */}
         <div className="col-9 p-0" style={{height: '100%', overflow: 'auto'}}>
           <div className="d-flex flex-row gap-1 ms-3">
-          <div>
-            <Button variant="danger" className="my-3" onClick={() => navigate('/nova-tarefa/')}>Nova Tarefa</Button>
-          </div>
-          <div>
-            <Button variant="dark" className="my-3" onClick={isArquivadas? filtrarApenasNaoArquivadas : filtrarApenasArquivadas}>{isArquivadas? 'Todas' : 'Arquivadas'}</Button>
-          </div>
+            <div>
+              <Button variant="danger" className="my-3" onClick={() => navigate('/nova-tarefa/')}>Nova Tarefa</Button>
+            </div>
+            <div>
+              <Button variant="dark" className="my-3"
+                      onClick={isArquivadas ? filtrarApenasNaoArquivadas : filtrarApenasArquivadas}>{isArquivadas ? 'Todas' : 'Arquivadas'}</Button>
+            </div>
           </div>
           <div className="px-3">
             {Object.values(tarefasAgrupadas).map((grupo, index) => (
