@@ -11,7 +11,6 @@ import {useNavigate, useParams} from "react-router-dom";
 
 export default function Home() {
   const {idProjeto} = useParams();
-  const [historico, setHistorico] = useState([historicoPrototype]);
   const [tarefas, setTarefas] = useState([tarefaPrototype]);
   const [tarefasAgrupadas, setTarefasAgrupadas] = useState([{status: {statusPrototype}, tarefas: [tarefaPrototype]}]);
   const [projetoSelecionado, setProjetoSelecionado] = useState(projetoPrototype);
@@ -42,8 +41,15 @@ export default function Home() {
   }
 
   useEffect(() => {
-    consultarHistoricoPorProjeto().then(response => {
-      setHistorico(response);
+    projetoService.consultar().then(response => {
+
+      const projetos = response.data;
+      const projeto = projetos.find(projeto => projeto.id == idProjeto);
+      if (!projeto) {
+        console.error('Projeto não encontrado');
+        return;
+      }
+      setProjetoSelecionado(projeto);
     })
 
     consultarStatusENUM().then(response => {
@@ -88,27 +94,15 @@ export default function Home() {
 
 
   return (
-    <div className="container-fluid" style={{height: 'calc(100vh - 50px)'}}>
-      <h1>{idProjeto}wqwq</h1>
+    <div className="container" style={{height: 'calc(100vh - 50px)'}}>
+
+      <TituloPagina titulo={projetoSelecionado.nome}/>
+
+
       <div className="row" style={{height: '100%'}}>
 
-        {/* Coluna do histórico */}
-        <div className="col-3 bg-light m-0 p-4" style={{height: '100%', overflow: 'hidden'}}>
-          <div>
-            <h2>projeto tal</h2>
-          </div>
-          <div
-            className="p-3 overflow-auto"
-            style={{maxHeight: 'calc(100% )', flex: '1 1 auto'}}
-          >
-            {historico.map((h) => (
-              <CartaoHistorico key={h.id} historico={h}/>
-            ))}
-          </div>
-        </div>
-
         {/* Coluna das tarefas */}
-        <div className="col-9 p-0" style={{height: '100%', overflow: 'auto'}}>
+        <div className="col-12 p-0" style={{height: '100%', overflow: 'auto'}}>
           <div className="d-flex flex-row gap-1 ms-3">
             <div>
               <Button variant="danger" className="my-3" onClick={() => navigate('/nova-tarefa/')}>Nova Tarefa</Button>

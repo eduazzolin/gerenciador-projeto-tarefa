@@ -20,15 +20,11 @@ function Login() {
       .then(response => {
         mensagemSucesso('Bem vindo!');
         authContext.iniciarSessao(response.data)
-        navigate("/home")
+        navigate("/")
       })
       .catch(error => {
         mensagemErro(error.response.data)
       })
-  }
-
-  const prepareCadastrar = () => {
-    navigate('/cadastro-usuarios')
   }
 
   return (
