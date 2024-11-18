@@ -1,12 +1,12 @@
-import React, {useContext, useEffect, useState} from "react";
-import TituloPagina from "../components/app/tituloPagina";
+import React, {useEffect, useState} from "react";
 import {Button, Form} from "react-bootstrap";
-import {consultarPorId, tarefaPrototype, TarefaService} from "../app/service/tarefaService";
+import {TarefaService} from "../app/service/tarefaService";
 import BotaoStatus from "../components/botaoStatus/botaoStatus";
-import {comentarioPrototype, consultarComentariosPorId} from "../app/service/comentarioService";
+import {comentarioPrototype} from "../app/service/comentarioService";
 import CartaoComentario from "../components/cartaoComentario/cartaoComentario";
 import {useNavigate, useParams} from "react-router-dom";
 import {mensagemErro, mensagemSucesso} from "../components/app/toastr";
+import PopupConfirmacao from "../components/popupConfirmacao/popupConfirmacao";
 
 export default function Tarefa() {
   const {id} = useParams();
@@ -14,15 +14,37 @@ export default function Tarefa() {
   const [comentarios, setComentarios] = useState([comentarioPrototype]);
   const navigate = useNavigate();
   const [comentario, setComentario] = useState();
-  const service = new TarefaService();
+  const [visibleConfirmDialog, setVisibleConfirmDialog] = useState(false);
 
+  const service = new TarefaService();
 
 
   const handleEditarTarefa = () => {
     navigate('/nova-tarefa', {state: {tarefa}});
   };
 
-  const handleComentar =  () => {
+  const abrirConfirmacaoDeletar = () => {
+    setVisibleConfirmDialog(true)
+    console.log('Abrindo confirmação para deletar:', tarefa);
+  }
+
+  const cancelarDelecao = () => {
+    setVisibleConfirmDialog(false)
+  }
+
+  const handleDeletarTarefa = () => {
+    setVisibleConfirmDialog(false);
+    service.deletar(tarefa.id).then(response => {
+      mensagemSucesso('Tarefa deletada com sucesso');
+      navigate(-1);
+    }).catch(error => {
+      mensagemErro('Erro ao deletar tarefa');
+      console.log('Erro ao deletar tarefa', error);
+    })
+  }
+
+
+  const handleComentar = () => {
     service.salvarComentario(comentario).then(response => {
       setComentarios([...comentarios, response.data]);
     }).catch(error => {
@@ -62,7 +84,6 @@ export default function Tarefa() {
   };
 
 
-
   useEffect(() => {
     if (id) {
       mountPage();
@@ -82,6 +103,15 @@ export default function Tarefa() {
 
   return (
     <div className="container-fluid" style={{height: 'calc(100vh - 50px)'}}>
+
+      <PopupConfirmacao
+        visivel={visibleConfirmDialog}
+        titulo="Confirmação"
+        mensagem="Deseja realmente excluir esta tarefa?"
+        onConfirm={handleDeletarTarefa}
+        onCancel={cancelarDelecao}
+      />
+
       <div className="row" style={{height: 'calc(100vh - 50px)'}}>
 
         {/* Verifica se a tarefa está carregada */}
@@ -89,7 +119,7 @@ export default function Tarefa() {
           <>
 
             {/* Seção da tarefa */}
-            <div className="col-7 p-4 ps-5 d-flex flex-column" style={{height: '100%'}}>
+            <div className="col-7 p-5  d-flex flex-column" style={{height: '100%'}}>
 
               <h3 className="mb-2">{tarefa.nome}</h3>
 
@@ -101,8 +131,11 @@ export default function Tarefa() {
                 <p>{tarefa.descricao}</p>
               </div>
 
-              <div className="d-flex mt-3">
-                <Button variant="outline-dark" className="ms-auto" >
+              <div className="d-flex mt-3 ms-auto gap-2 ">
+                <Button variant="outline-danger" className="" onClick={abrirConfirmacaoDeletar}>
+                  Remover
+                </Button>
+                <Button variant="outline-dark" className="" onClick={handleEditarTarefa}>
                   Editar
                 </Button>
               </div>
@@ -113,7 +146,8 @@ export default function Tarefa() {
             <div className="col-5 bg-light m-0 p-3 d-flex flex-column" style={{height: '100%'}}>
               <div className="p-3 overflow-auto" style={{flex: '1 1 auto', minHeight: 0}}>
                 {comentarios.map((comentario) => (
-                  <CartaoComentario key={comentario.id} comentario={comentario} funcaoDeletar={handleDeletarComentario}/>
+                  <CartaoComentario key={comentario.id} comentario={comentario}
+                                    funcaoDeletar={handleDeletarComentario}/>
                 ))}
               </div>
               <div className="p-3 mt-auto" style={{height: '200px'}}>
@@ -122,8 +156,8 @@ export default function Tarefa() {
                     <Form.Control
                       as="textarea"
                       onChange={event => setComentario({
-                       idTarefa: tarefa.id,
-                       comentario: event.target.value
+                        idTarefa: tarefa.id,
+                        comentario: event.target.value
                       })}
                       rows={3} placeholder="Digite seu comentário"/>
                   </Form.Group>
