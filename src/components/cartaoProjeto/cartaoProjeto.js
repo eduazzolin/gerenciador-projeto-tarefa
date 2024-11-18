@@ -2,12 +2,10 @@ import React from 'react';
 import './cartaoProjetoStyle.css';
 import {Button} from "react-bootstrap";
 import {useNavigate} from 'react-router-dom';
-import ProjetoService from "../../app/service/projetoService";
+import LocalStorageService from "../../app/service/localStorageService";
 
 export default function CartaoProjeto({projeto, index, deleteAction}) {
   const navigate = useNavigate();
-  const service = new ProjetoService();
-
   const handleEditarProjeto = () => {
     navigate('/novo-projeto', {state: {projeto}});
   };
@@ -17,7 +15,8 @@ export default function CartaoProjeto({projeto, index, deleteAction}) {
   }
 
   const handleSelecionarProjeto = () => {
-    navigate('/home/' + projeto.id);
+    LocalStorageService.adicionarItem('ID_PROJETO', projeto.id);
+    navigate('/home');
   }
 
   return (

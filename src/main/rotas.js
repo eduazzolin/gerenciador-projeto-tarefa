@@ -34,8 +34,8 @@ function Rotas() {
           <Route path="/projetos" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<MeusProjetos/>}/>}/>
           <Route path="/conta" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<MinhaConta/>}/>}/>
           <Route path="/tarefa/:id" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<Tarefa/>}/>}/>
-          <Route path="/" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<MeusProjetos/>}/>}/>
-          <Route path="/home/:idProjeto" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<Home/>}/>}/>
+          <Route path="/" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<Home/>}/>}/>
+          <Route path="/home" element={<PrivateRoute isUsuarioAutenticado={isAutenticado} element={<Home/>}/>}/>
           <Route path="/login" element={<Login/>}/>
           <Route path="/cadastro-usuarios" element={<CadastroUsuario/>}/>
         </Routes>
