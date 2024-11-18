@@ -1,0 +1,7 @@
+.toast {
+  background-color: #fff !important;
+  color: #000 !important;
+}
+.toast {
+  z-index: 9999 !important;
+}

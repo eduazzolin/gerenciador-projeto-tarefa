@@ -1,10 +1,11 @@
-import React, {useContext, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import TituloPagina from "../components/app/tituloPagina";
 import {Button, Form} from "react-bootstrap";
-import {tarefaPrototype} from "../app/service/tarefaService";
-import ProjetoService, {consultarProjetos} from "../app/service/projetoService";
+import {tarefaPrototype, TarefaService} from "../app/service/tarefaService";
+import ProjetoService from "../app/service/projetoService";
 import {consultarStatusENUM} from "../app/service/statusService";
 import {useLocation, useNavigate} from "react-router-dom";
+import {mensagemErro, mensagemSucesso} from "../components/app/toastr";
 
 function CadastroTarefa() {
 
@@ -12,11 +13,12 @@ function CadastroTarefa() {
   const navigate = useNavigate();
   const tarefaRecebida = location.state?.tarefa;
 
-  const [tarefa, setTarefa] = useState(tarefaRecebida || tarefaPrototype);
+  const [tarefa, setTarefa] = useState(tarefaRecebida || {});
   const [projetos, setProjetos] = useState([]);
   const [status, setStatus] = useState([]);
   const projetoService = new ProjetoService();
 
+  const service = new TarefaService();
 
   useEffect(() => {
     projetoService.consultar().then(response => {
@@ -39,13 +41,20 @@ function CadastroTarefa() {
 
   const handleSave = () => {
     if (tarefa.id) {
-      // Lógica para atualizar o tarefa existente
       console.log('Atualizando tarefa:', tarefa);
     } else {
-      // Lógica para criar um novo tarefa
       console.log('Criando novo tarefa:', tarefa);
     }
-    navigate(-1);
+    service
+      .salvar(tarefa)
+      .then(response => {
+        mensagemSucesso('Tarefa cadastrado com sucesso!');
+        navigate(-1);
+      })
+      .catch(error => {
+        mensagemErro('Erro ao criar tarefa');
+        console.log(error);
+      })
   };
 
   return (
@@ -65,10 +74,11 @@ function CadastroTarefa() {
                   <Form.Label>Projeto</Form.Label>
                   <Form.Select
                     aria-label="Projeto"
-                    value={tarefa.id_projeto.id}
+                    value={tarefa.idProjeto}
                     onChange={event => {
-                      setTarefa({...tarefa, id_projeto: {id: event.target.value}});
+                      setTarefa({...tarefa, idProjeto: event.target.value});
                     }}>
+                    <option value={''}>Selecione um projeto</option>
                     {
                       projetos.map((projeto, index) => (
                         <option key={index} value={projeto.id}>{projeto.nome}</option>
@@ -83,9 +93,9 @@ function CadastroTarefa() {
                   <Form.Label>Status</Form.Label>
                   <Form.Select
                     aria-label="Status"
-                    value={tarefa.id_status.id}
+                    value={tarefa.idStatus}
                     onChange={event => {
-                      setTarefa({...tarefa, id_status: {id: event.target.value}});
+                      setTarefa({...tarefa, idStatus: event.target.value});
                     }}>
                     {
                       status.map((status, index) => (

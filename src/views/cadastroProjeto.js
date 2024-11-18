@@ -35,7 +35,6 @@ function CadastroProjeto() {
         console.log(error);
       })
   }
-  // Após salvar, redirecionar para "Meus Projetos"
 
 
   return (

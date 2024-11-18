@@ -10,6 +10,10 @@ import Tarefa from "../views/tarefa";
 import {AuthContext} from "./provedorAutenticacao";
 import Login from "../views/login";
 import CadastroUsuario from "../views/cadastroUsuario";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'toastr/build/toastr.min.css';
+
+
 
 const PrivateRoute = ({isUsuarioAutenticado, element}) => {
   return isUsuarioAutenticado ? element : <Navigate to="/login"/>;

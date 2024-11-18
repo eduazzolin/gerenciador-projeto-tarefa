@@ -4,7 +4,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import {consultarStatusENUM} from "../../app/service/statusService";
 import {Button} from "react-bootstrap";
 
-export default function BotaoStatus({status, clicavel}) {
+export default function BotaoStatus({status, clicavel, acaoTrocar}) {
   const [currentStatus, setCurrentStatus] = useState(null);
   const [statusENUM, setStatusENUM] = useState([]);
 
@@ -32,6 +32,7 @@ export default function BotaoStatus({status, clicavel}) {
   const handleSelect = (eventKey) => {
     const selectedStatus = statusENUM.find(s => s.id === parseInt(eventKey));
     setCurrentStatus(selectedStatus);
+    acaoTrocar(selectedStatus);
   };
 
   return (
