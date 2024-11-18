@@ -97,6 +97,7 @@ function CadastroTarefa() {
                     onChange={event => {
                       setTarefa({...tarefa, idStatus: event.target.value});
                     }}>
+                    <option value={''}>Selecione um status</option>
                     {
                       status.map((status, index) => (
                         <option key={index} value={status.id}>{status.nome}</option>
