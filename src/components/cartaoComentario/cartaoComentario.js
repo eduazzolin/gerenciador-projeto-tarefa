@@ -1,8 +1,8 @@
 import React from 'react';
 import {Button} from "react-bootstrap";
-import { FaTrash } from "react-icons/fa";
+import {FaTrash} from "react-icons/fa";
 
-export default function CartaoComentario({ comentario, index }) {
+export default function CartaoComentario({comentario, funcaoDeletar, index}) {
   return (
     <div className="border bg-white rounded mb-3" key={index}>
       <div className="row p-3">
@@ -12,8 +12,17 @@ export default function CartaoComentario({ comentario, index }) {
         </div>
 
         <div className="col-12 d-flex align-items-end">
-          <span className="mb-0 ms-auto small  text-muted">{new Date(comentario.data_criacao).toLocaleString()}</span>
-          <a className="ms-2" href={'#'}><FaTrash /></a>
+
+          <span className="mb-0 ms-auto small text-muted">
+  {(() => {
+    try {
+      return new Date(...comentario.dataCriacao).toLocaleString();
+    } catch (error) {
+      return ''
+    }
+  })()}
+</span>
+          <a className="ms-2" href={'#'} onClick={() => funcaoDeletar(comentario)}><FaTrash/></a>
         </div>
 
 

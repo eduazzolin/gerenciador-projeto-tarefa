@@ -6,13 +6,14 @@ import BotaoStatus from "../components/botaoStatus/botaoStatus";
 import {comentarioPrototype, consultarComentariosPorId} from "../app/service/comentarioService";
 import CartaoComentario from "../components/cartaoComentario/cartaoComentario";
 import {useNavigate, useParams} from "react-router-dom";
+import {mensagemErro, mensagemSucesso} from "../components/app/toastr";
 
 export default function Tarefa() {
   const {id} = useParams();
   const [tarefa, setTarefa] = useState({});
   const [comentarios, setComentarios] = useState([comentarioPrototype]);
   const navigate = useNavigate();
-
+  const [comentario, setComentario] = useState();
   const service = new TarefaService();
 
 
@@ -20,6 +21,28 @@ export default function Tarefa() {
   const handleEditarTarefa = () => {
     navigate('/nova-tarefa', {state: {tarefa}});
   };
+
+  const handleComentar =  () => {
+    service.salvarComentario(comentario).then(response => {
+      setComentarios([...comentarios, response.data]);
+    }).catch(error => {
+      mensagemErro('Erro ao salvar comentário');
+      console.log('Erro ao salvar comentário', error);
+    })
+  }
+
+  const handleDeletarComentario = (p_comentario) => {
+    console.log('Deletar comentário', p_comentario);
+
+    service.deletarComentario(p_comentario).then(response => {
+      mensagemSucesso('Comentário deletado com sucesso');
+      const listaAtualizada = comentarios.filter(comentario => comentario.id !== p_comentario.id);
+      setComentarios(listaAtualizada);
+    }).catch(error => {
+      mensagemErro('Erro ao deletar comentário');
+      console.log('Erro ao deletar comentário', error);
+    })
+  }
 
   const mountPage = async () => {
 
@@ -29,14 +52,16 @@ export default function Tarefa() {
       console.error('Erro ao buscar dados', error);
     });
 
+    service.consultarComentariosPorIdTarefa(id).then(response => {
+      setComentarios(response.data);
+      console.log('Comentários', response.data);
+    }).catch(error => {
+      console.log('Erro ao buscar comentários', error);
+    })
 
-    try {
-      const responseComentarios = await consultarComentariosPorId(id);
-      setComentarios(responseComentarios);
-    } catch (error) {
-      console.log("Erro ao buscar dados", error);
-    }
   };
+
+
 
   useEffect(() => {
     if (id) {
@@ -88,16 +113,22 @@ export default function Tarefa() {
             <div className="col-5 bg-light m-0 p-3 d-flex flex-column" style={{height: '100%'}}>
               <div className="p-3 overflow-auto" style={{flex: '1 1 auto', minHeight: 0}}>
                 {comentarios.map((comentario) => (
-                  <CartaoComentario key={comentario.id} comentario={comentario}/>
+                  <CartaoComentario key={comentario.id} comentario={comentario} funcaoDeletar={handleDeletarComentario}/>
                 ))}
               </div>
               <div className="p-3 mt-auto" style={{height: '200px'}}>
                 <Form>
                   <Form.Group className="mb-3">
-                    <Form.Control as="textarea" rows={3} placeholder="Digite seu comentário"/>
+                    <Form.Control
+                      as="textarea"
+                      onChange={event => setComentario({
+                       idTarefa: tarefa.id,
+                       comentario: event.target.value
+                      })}
+                      rows={3} placeholder="Digite seu comentário"/>
                   </Form.Group>
                   <div className="d-flex">
-                    <Button variant="outline-dark" className="ms-auto" type="submit">
+                    <Button variant="outline-dark" className="ms-auto" type="submit" onClick={handleComentar}>
                       Comentar
                     </Button>
                   </div>

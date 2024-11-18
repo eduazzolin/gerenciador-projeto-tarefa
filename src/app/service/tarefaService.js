@@ -35,7 +35,15 @@ export class TarefaService extends ApiService {
   }
 
   consultarComentariosPorIdTarefa(idTarefa) {
-    return this.get(idTarefa + '/comentarios/');
+    return this.get('/' + idTarefa + '/comentarios');
+  }
+
+  salvarComentario(comentario) {
+    return this.post('/' + comentario.idTarefa + '/comentarios', comentario);
+  }
+
+  deletarComentario(comentario) {
+    return this.delete('/' + comentario.tarefa.id + '/comentarios/' + comentario.id);
   }
 
 }
