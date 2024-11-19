@@ -120,7 +120,7 @@ export default function Home() {
               </Button>
             </div>
           </div>
-          <div className="px-3">
+          <div className="px-3 d-flex gap-3">
             {Object.values(tarefasAgrupadas).map((grupo, index) => (
               <BlocoTarefasPorStatus key={index} status={grupo.status} tarefas={grupo.tarefas} index={index} />
             ))}
