@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Button, Form} from "react-bootstrap";
-import {TarefaService} from "../app/service/tarefaService";
+import {comentarioPrototype, TarefaService} from "../app/service/tarefaService";
 import BotaoStatus from "../components/botaoStatus/botaoStatus";
-import {comentarioPrototype} from "../app/service/comentarioService";
 import CartaoComentario from "../components/cartaoComentario/cartaoComentario";
 import {useNavigate, useParams} from "react-router-dom";
 import {mensagemErro, mensagemSucesso} from "../components/app/toastr";
@@ -13,7 +12,7 @@ export default function Tarefa() {
   const [tarefa, setTarefa] = useState({});
   const [comentarios, setComentarios] = useState([comentarioPrototype]);
   const navigate = useNavigate();
-  const [comentario, setComentario] = useState();
+  const [comentario, setComentario] = useState(comentarioPrototype);
   const [visibleConfirmDialog, setVisibleConfirmDialog] = useState(false);
 
   const service = new TarefaService();
@@ -45,8 +44,19 @@ export default function Tarefa() {
 
 
   const handleComentar = () => {
+
+    try {
+      service.validarComentario(comentario);
+    } catch (erro) {
+      const msgs = erro.mensagens;
+      msgs.forEach(msg => mensagemErro(msg));
+      return false;
+    }
+
+
     service.salvarComentario(comentario).then(response => {
       setComentarios([...comentarios, response.data]);
+      setComentario(comentarioPrototype);
     }).catch(error => {
       mensagemErro('Erro ao salvar comentário');
       console.log('Erro ao salvar comentário', error);
@@ -155,6 +165,7 @@ export default function Tarefa() {
                   <Form.Group className="mb-3">
                     <Form.Control
                       as="textarea"
+                      value={comentario.comentario}
                       onChange={event => setComentario({
                         idTarefa: tarefa.id,
                         comentario: event.target.value
@@ -162,7 +173,7 @@ export default function Tarefa() {
                       rows={3} placeholder="Digite seu comentário"/>
                   </Form.Group>
                   <div className="d-flex">
-                    <Button variant="outline-dark" className="ms-auto" type="submit" onClick={handleComentar}>
+                    <Button variant="outline-dark" className="ms-auto" onClick={handleComentar}>
                       Comentar
                     </Button>
                   </div>

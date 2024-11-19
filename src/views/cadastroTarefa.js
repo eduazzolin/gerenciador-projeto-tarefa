@@ -40,15 +40,19 @@ function CadastroTarefa() {
   }, [tarefaRecebida]);
 
   const handleSave = () => {
-    if (tarefa.id) {
-      console.log('Atualizando tarefa:', tarefa);
-    } else {
-      console.log('Criando novo tarefa:', tarefa);
+    try {
+      service.validar(tarefa);
+
+    } catch (erro) {
+      const msgs = erro.mensagens;
+      console.log(erro);
+      msgs.forEach(msg => mensagemErro(msg));
+      return false;
     }
     service
       .salvar(tarefa)
       .then(response => {
-        mensagemSucesso('Tarefa cadastrado com sucesso!');
+        mensagemSucesso('Tarefa registrada com sucesso!');
         navigate(-1);
       })
       .catch(error => {

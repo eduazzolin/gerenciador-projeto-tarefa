@@ -19,11 +19,15 @@ function CadastroProjeto() {
   }, [projetoRecebido]);
 
   const handleSave = () => {
-    if (projeto.id) {
-      console.log('Atualizando projeto:', projeto);
-    } else {
-      console.log('Criando novo projeto:', projeto);
+
+    try {
+      service.validar(projeto);
+    } catch (erro) {
+      const msgs = erro.mensagens;
+      msgs.forEach(msg => mensagemErro(msg));
+      return false;
     }
+
     service
       .salvar(projeto)
       .then(response => {
