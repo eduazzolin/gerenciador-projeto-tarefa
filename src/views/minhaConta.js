@@ -2,18 +2,17 @@ import React, {useContext, useEffect, useState} from "react";
 import TituloPagina from "../components/app/tituloPagina";
 import {Button, Form} from "react-bootstrap";
 import LocalStorageService from "../app/service/localStorageService";
-import usuarioService from "../app/service/usuarioService";
 import UsuarioService from "../app/service/usuarioService";
 import {mensagemErro, mensagemSucesso} from "../components/app/toastr";
+import {AuthContext} from "../main/provedorAutenticacao";
 
 function MinhaConta() {
   const [usuario, setUsuario] = useState({});
-  const [confirmarSenha, setConfirmarSenha] = useState('');
 
   const service = new UsuarioService();
 
+  const {encerrarSessao} = useContext(AuthContext);
   const cadastrar = () => {
-
     console.log(usuario);
     try {
       service.validar(usuario);
@@ -27,6 +26,7 @@ function MinhaConta() {
       .salvar(usuario)
       .then(response => {
         mensagemSucesso('Usuario editado com sucesso!');
+        encerrarSessao();
       })
       .catch(error => {
         mensagemErro(error.response.data)

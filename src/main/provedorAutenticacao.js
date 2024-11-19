@@ -1,6 +1,5 @@
 import React from "react";
 import AuthService from "../app/service/authService";
-import apiService from "../app/service/apiService";
 import {jwtDecode} from 'jwt-decode'
 
 export const AuthContext = React.createContext();
@@ -19,7 +18,6 @@ function ProvedorAutenticacao(props) {
     return null;
   });
   const [isAutenticado, setIsAutenticado] = React.useState(isUserAuthenticated);
-
 
 
   const iniciarSessao = (tokenDTO) => {
