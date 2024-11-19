@@ -6,7 +6,7 @@ export default function BlocoTarefasPorStatus({status, tarefas, index}) {
 
 
   return (
-    <div key={index} className="bloco-tarefas mb-3">
+    <div key={index} className="bloco-tarefas mb-3" style={{ width: "300px" }}>
       <BarraStatus status={status}/>
       <div className="bg-opacity-10 bg-dark p-3">
         <div className="tarefas">

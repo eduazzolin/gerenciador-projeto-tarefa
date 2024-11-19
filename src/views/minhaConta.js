@@ -1,10 +1,45 @@
 import React, {useContext, useEffect, useState} from "react";
 import TituloPagina from "../components/app/tituloPagina";
 import {Button, Form} from "react-bootstrap";
+import LocalStorageService from "../app/service/localStorageService";
+import usuarioService from "../app/service/usuarioService";
+import UsuarioService from "../app/service/usuarioService";
+import {mensagemErro, mensagemSucesso} from "../components/app/toastr";
 
 function MinhaConta() {
   const [usuario, setUsuario] = useState({});
   const [confirmarSenha, setConfirmarSenha] = useState('');
+
+  const service = new UsuarioService();
+
+  const cadastrar = () => {
+
+    console.log(usuario);
+    try {
+      service.validar(usuario);
+    } catch (erro) {
+      const msgs = erro.mensagens;
+      msgs.forEach(msg => mensagemErro(msg));
+      return false;
+    }
+
+    service
+      .salvar(usuario)
+      .then(response => {
+        mensagemSucesso('Usuario editado com sucesso!');
+      })
+      .catch(error => {
+        mensagemErro(error.response.data)
+      })
+
+  }
+
+
+  useEffect(() => {
+    const usuarioLogado = LocalStorageService.obterItem('_usuario_logado');
+    setUsuario(usuarioLogado);
+  }, []);
+
 
   return (
     <div className={'container'}>
@@ -42,15 +77,16 @@ function MinhaConta() {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Confirmar senha</Form.Label>
+              <Form.Label>Repita a senha</Form.Label>
               <Form.Control
                 type="password"
-                onChange={event => setConfirmarSenha(event.target.value)}/>
+                value={usuario.senhaRepeticao}
+                onChange={event => setUsuario({...usuario, senhaRepeticao: event.target.value})}/>
             </Form.Group>
 
 
             <div className="d-flex justify-content-end">
-              <Button className="ms-auto mt-3" variant="primary" onClick={() => console.log(usuario)}> Salvar </Button>
+              <Button className="ms-auto mt-3" variant="primary" onClick={cadastrar}> Salvar </Button>
             </div>
           </Form>
 

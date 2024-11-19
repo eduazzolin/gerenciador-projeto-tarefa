@@ -63,7 +63,6 @@ function CadastroUsuario() {
               <Form.Label>Senha</Form.Label>
               <Form.Control
                 type="password"
-                value={usuario.senha}
                 onChange={event => setUsuario({...usuario, senha: event.target.value})}/>
             </Form.Group>
 
@@ -71,7 +70,6 @@ function CadastroUsuario() {
               <Form.Label>Repita a senha</Form.Label>
               <Form.Control
                 type="password"
-                value={usuario.senhaRepeticao}
                 onChange={event => setUsuario({...usuario, senhaRepeticao: event.target.value})}/>
             </Form.Group>
 
