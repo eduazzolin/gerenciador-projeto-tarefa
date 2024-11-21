@@ -33,12 +33,16 @@ class UsuarioService extends ApiService {
     const erros = []
     if (!usuario.nome) {
       erros.push("O campo nome é obrigatório.")
+    } else if (usuario.nome.length > 255) {
+      erros.push("O campo nome deve ter no máximo 255 caracteres.")
     }
+
     if (!usuario.email) {
       erros.push("O campo email é obrigatório.")
     } else if (!usuario.email.match(/^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/)) {
       erros.push("Informe um email válido.")
     }
+
     if (!usuario.senha || !usuario.senhaRepeticao) {
       erros.push("O campo senha é obrigatório.")
     } else if (usuario.senha.length < 6) {
