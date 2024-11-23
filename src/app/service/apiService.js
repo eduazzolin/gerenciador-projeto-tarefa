@@ -1,8 +1,7 @@
 import axios from "axios";
 
-console.log('API URL:', process.env.REACT_APP_API_URL);
 const httpClient = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: process.env.REACT_APP_API_URL || 'https://gerenciador-projeto.onrender.com',
   withCredentials: true
 });
 
