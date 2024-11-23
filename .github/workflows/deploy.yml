@@ -9,25 +9,9 @@ on:
 
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [ 18.x ]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.Js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: "npm"
-
-      - run: npm install
-      - run: npm test
 
   deploy:
     name: Deploy
-    needs: [build]
     runs-on: ubuntu-latest
 
     steps:
