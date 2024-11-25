@@ -27,7 +27,6 @@ export default class AuthService {
   static logar(usuario, token) {
     LocalStorageService.adicionarItem(USUARIO_LOGADO, usuario);
     LocalStorageService.adicionarItem(TOKEN, token);
-    ApiService.registrarToken(token);
   }
 
   static obterUsuarioAutenticado() {
