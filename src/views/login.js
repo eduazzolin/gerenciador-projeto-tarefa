@@ -35,7 +35,7 @@ function Login() {
           <h2 className="text-center">Login</h2>
           <Form>
             <Form.Group className="mb-3">
-              <Form.Label>Email</Form.Label>
+              <Form.Label>Email1</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Email do usuário"
