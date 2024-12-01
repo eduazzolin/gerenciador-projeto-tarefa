@@ -1,4 +1,6 @@
 import axios from "axios";
+import {mensagemErro} from "../../components/app/toastr";
+import {useNavigate} from "react-router-dom";
 
 const httpClient = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'https://gerenciador-projeto.onrender.com',
@@ -10,6 +12,7 @@ class ApiService {
   constructor(apiUrl) {
     this.apiUrl = apiUrl
   }
+
 
   post(url, objeto) {
     let token = localStorage.getItem('access_token') || '';
@@ -76,7 +79,14 @@ class ApiService {
       console.log(headers);
       return httpClient.get(requestUrl, {headers});
     } else {
-      return httpClient.get(requestUrl);
+      mensagemErro("Sua sessão expirou. Faça login novamente.");
+      return Promise.reject({
+        response: {
+          data: {
+            message: 'Sua sessão expirou. Faça login novamente.'
+          }
+        }
+      });
     }
   }
 

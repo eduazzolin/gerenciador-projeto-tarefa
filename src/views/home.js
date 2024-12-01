@@ -7,6 +7,7 @@ import {TarefaService} from "../app/service/tarefaService";
 import BlocoTarefasPorStatus from "../components/blocoTarefasPorStatus/blocoTarefasPorStatus";
 import {useNavigate} from "react-router-dom";
 import LocalStorageService from "../app/service/localStorageService";
+import {mensagemErro} from "../components/app/toastr";
 
 export default function Home() {
   const [tarefas, setTarefas] = useState([]);
@@ -63,6 +64,11 @@ export default function Home() {
         const responseTarefas = await tarefaService.consultarPorProjeto(idProjetoLocal);
         setTarefas(responseTarefas.data);
       } catch (e) {
+        if (e == "TOKEN") {
+          mensagemErro("Sua sessão expirou. Faça login novamente.");
+          navigate("/login");
+          return;
+        }
         console.error("Erro ao buscar dados", e);
         navigate("/projetos");
       }
